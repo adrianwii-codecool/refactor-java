@@ -7,63 +7,68 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static void main(String[] args) {
-        int a;
-        int b;
-        Random random = new Random();
+    private static Scanner scanner = new Scanner( System.in );
+    private static Random random = new Random();
 
+    public static void main(String[] args) {
+        menu();
+        System.out.println("Select option");
+
+        switch(scanner.nextInt()) {
+            case 1:
+                System.out.println("Choose your number:");
+                int a = scanner.nextInt();
+                int b = random.nextInt(100);
+                compareNumbers(a, b);
+                break;
+            case 2:
+                System.out.println("Provide your sentence:");
+                scanner.nextLine();
+                String sentence = scanner.nextLine();
+                sentenceHistogram(sentence);
+                break;
+            case 3:
+                System.out.println("Bye bye!");
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid selection");
+        }
+    }
+
+    private static void compareNumbers(int a, int b) {
+        System.out.println(a + " " + b);
+        System.out.println("Check if your number is greater than computer's number");
+        System.out.println((a > b) ? "A is grater than B" : "B is grater than A");
+
+        validate(a, b);
+    }
+
+    public static void menu() {
         System.out.println("| MENU                         |");
         System.out.println("| Options:                     |");
         System.out.println("|        1. Number comparision |");
         System.out.println("|        2. Sentence histogram |");
         System.out.println("|        3. Exit               |");
-
-        System.out.println("Select option");
-        int option;
-        Scanner scanner = new Scanner( System.in );
-        option = scanner.nextInt();
-
-        if (option == 1) {
-            System.out.println("Choose your number:");
-            a = scanner.nextInt();
-            b = random.nextInt(100);
-
-            System.out.println(a + " " + b);
-            System.out.println("Check if your number is greater than computer's number");
-            if (a > b) {
-                System.out.printf("A is grater than B%n");
-            } else {
-                System.out.printf("B is grater than A%n");
-            }
-
-            validate(a, b);
-        } else if (option == 2) {
-            System.out.println("Provide your sentence:");
-            scanner.nextLine();
-            String sentence = scanner.nextLine();
-            sentenceHistogram(sentence);
-        } else if (option == 3) {
-            System.out.println("Bye bye!");
-            System.exit(0);
-        } else {
-            System.out.println("Invalid selection");
-        }
     }
 
     public static void validate(int a, int b) {
-        if(a > 10) {
-            System.out.println("A is greater than 10!");
-            multiply(a, b);
-
-            if (b < 10) {
-                System.out.println("B is less than A!");
-            } else {
-                System.out.println("B is greater than or equal 10!");
-                if(a < b) {
-                    System.out.println("The numbers entered do not match the conditions!");
-                }
-            }
+        if(isNumberInRange(a, 0, 10)) {
+            return;
         }
+
+        System.out.println("A is greater than 10!");
+        multiply(a, b);
+        System.out.println((b < 10) ? "B is less than A!" : "B is greater than or equal 10!");
+
+        if(a < b) {
+            System.out.println("The numbers entered do not match the conditions!");
+            return;
+        }
+    }
+
+    public static boolean isNumberInRange(int number, int a, int b) {
+        return number < b && number > a;
     }
 
     public static int multiply(int a, int b) {
@@ -72,24 +77,24 @@ public class Main {
 
     public static void sentenceHistogram(String sentence) {
         sentence = sentence.toUpperCase().replaceAll("\\s+","");
-        int cnt = 0;
+        int counter = 0;
+        int length = sentence.length();
         Map<Character, Integer> histogram = new HashMap<>();
 
-        for (int i = 0; i < sentence.length(); i++) {
+        for (int i = 0; i < length; i++) {
             Character ch = sentence.charAt(i);
-            if (ch.equals(" ")) {
-                continue;
-            }
+
             if (histogram.containsKey(ch)) {
                 continue;
             }
 
-            for (int j = 0; j < sentence.length(); j++) {
-                if (sentence.charAt(j) == ch)
-                    cnt++;
+            for (int j = 0; j < length; j++) {
+                if (sentence.charAt(j) == ch) {
+                    counter++;
+                }
             }
-            histogram.put(ch, cnt);
-            cnt = 0;
+            histogram.put(ch, counter);
+            counter = 0;
         }
 
         printHistogram(histogram);
